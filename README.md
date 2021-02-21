@@ -1,5 +1,12 @@
 # startup-backer
 
+## Package
+ * Nuxt js
+ * Nuxt Auth
+ * Tailwind
+ * Nuxt Axios
+ * Nuxt PWA
+
 ## Build Setup
 
 ```bash
