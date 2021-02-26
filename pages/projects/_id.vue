@@ -30,7 +30,8 @@
 
             <div class="flex mt-3">
               <div class="w-1/4">
-                <img src="/testimonial-1-icon.png" alt="" class="w-full inline-block rounded-full" />
+                <img :src="$axios.defaults.baseURL + '/' + campaign.data.user.image_url" alt=""
+                  class="w-full inline-block rounded-full" />
               </div>
               <div class="w-3/4 ml-5 mt-1">
                 <div class="font-semibold text-xl text-gray-800">
@@ -46,13 +47,21 @@
             <ul class="list-check mt-3">
               <li v-for="perk in campaign.data.perks" :key="perk">{{perk}}</li>
             </ul>
-            <input type="number"
-              class="border border-gray-500 block w-full px-6 py-3 mt-4 rounded-full text-gray-800 transition duration-300 ease-in-out focus:outline-none focus:shadow-outline"
-              placeholder="Amount in Rp" value="" />
-            <nuxt-link to="/fund-success"
-              class="text-center mt-3 button-cta block w-full bg-orange-button hover:bg-green-button text-white font-medium px-6 py-3 text-md rounded-full">
-              Fund Now
-            </nuxt-link>
+            <template v-if="this.$store.state.auth.loggedIn">
+              <input type="number"
+                class="border border-gray-500 block w-full px-6 py-3 mt-4 rounded-full text-gray-800 transition duration-300 ease-in-out focus:outline-none focus:shadow-outline"
+                placeholder="Amount in Rp" v-model.number="transactions.amount" @keyup.enter="fund" />
+              <button @click="fund"
+                class="text-center mt-3 button-cta block w-full bg-orange-button hover:bg-green-button text-white font-medium px-6 py-3 text-md rounded-full">
+                Fund Now
+              </button>
+            </template>
+            <templatev v-else>
+              <button @click="$router.push({ path: '/login'})"
+                class="text-center mt-3 button-cta block w-full bg-orange-button hover:bg-green-button text-white font-medium px-6 py-3 text-md rounded-full">
+                Sign in to Fund
+              </button>
+            </templatev>
           </div>
         </div>
       </div>
@@ -61,15 +70,15 @@
       <div class="flex justify-between items-center">
         <div class="w-full md:w-3/4 mr-6">
           <h2 class="text-4xl text-gray-900 mb-2 font-medium">
-            {{campaign.data.name}}
+            {{ campaign.data.name }}
           </h2>
           <p class="font-light text-xl mb-5">
-            {{ campaign.data.short_description}}
+            {{ campaign.data.short_description }}
           </p>
 
           <div class="relative progress-bar">
             <div class="overflow-hidden mb-4 text-xs flex rounded-full bg-gray-200 h-6">
-              <div :style="'width :' + (campaign.data.current_amount / campaign.data.goal_amount) * 100 + '%'"
+              <div :style="'width :' + ( campaign.data.current_amount / campaign.data.goal_amount ) * 100 + '%'"
                 class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-purple-progress progress-striped">
               </div>
             </div>
@@ -106,13 +115,27 @@
     },
     data() {
       return {
-        default_image  : ''
+        default_image: '',
+        transactions: {
+          amount: 0,
+          campaign_id: Number.parseInt(this.$route.params.id)
+        }
       }
     },
 
     methods: {
       changeImage(url) {
         this.default_image = url
+      },
+
+      async fund() {
+        try {
+          let response = await this.$axios.post('/api/v1/transactions', this.transactions)
+          window.location = response.data.data.payment_url
+          console.log("🚀 ~ file: _id.vue ~ line 135 ~ fund ~ response.data.payment_url", response.data.data.payment_url)
+        } catch (error) {
+          console.log("🚀 ~ file: _id.vue ~ line 128 ~ fund ~ error", error)
+        }
       }
     },
 
