@@ -42,7 +42,10 @@ export default {
         '@nuxtjs/pwa',
         //https://auth.nuxtjs.org/guide/setup/
         '@nuxtjs/axios',
-        '@nuxtjs/auth-next'
+        '@nuxtjs/auth'
+
+        //"@nuxtjs/auth-next": "5.0.0-1613647907.37b1156",
+        //'@nuxtjs/auth-next' -> !warn
     ],
 
     // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -63,9 +66,9 @@ export default {
                     // autoFetch: true
                 },
                 endpoints: {
-                    login: { url: '/api/v1/sessions', method: 'post', propertyName: 'data.token' },
+                    login: { url: '/api/v1/sessions', method: 'post', propertyName: 'data.token', },
                     logout: false,
-                    user: { url: '/api/v1/users/fetch', method: 'post', propertyName: 'data' }
+                    user: { url: '/api/v1/users/fetch', method: 'get', propertyName: 'data' }
                 },
                 // tokenRequired : true,
                 // tokenType : 'bearer',
