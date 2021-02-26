@@ -9,22 +9,22 @@
         <div class="mb-6">
           <div class="mb-4">
             <label class="font-normal text-lg text-white block mb-3">Email Address</label>
-            <input type="email"
+            <input type="email" v-model="login.email"
               class="auth-form focus:outline-none focus:bg-purple-hover focus:shadow-outline focus:border-purple-hover-stroke focus:text-gray-100"
-              placeholder="Write your email address here" value="julia.keeva@gmail.com" />
+              placeholder="Write your email address here" value="jery@gmail.com" />
           </div>
         </div>
         <div class="mb-6">
           <div class="mb-4">
             <label class="font-normal text-lg text-white block mb-3">Password</label>
-            <input type="password"
+            <input @keyup.enter="userLogin" type="password" v-model="login.password"
               class="auth-form focus:outline-none focus:bg-purple-hover focus:shadow-outline focus:border-purple-hover-stroke focus:text-gray-100"
-              placeholder="Write your password here" value="nasigorenglimaribbu" />
+              placeholder="Write your password here" value="password" />
           </div>
         </div>
         <div class="mb-6">
           <div class="mb-4">
-            <button @click="$router.push({ path: '/' })"
+            <button @click="userLogin"
               class="block w-full bg-orange-button hover:bg-green-button text-white font-semibold px-6 py-4 text-lg rounded-full">
               Sign In
             </button>
@@ -42,9 +42,28 @@
 </template>
 
 <script>
-  export default {
-    layout: 'auth'
-  }
+ export default {
+  layout: 'auth',
+  data() {
+    return {
+      login: {
+        email: 'jery@gmail.com',
+        password: 'password',
+      },
+    }
+  },
+  methods: {
+    async userLogin() {
+      try {
+        let response = await this.$auth.loginWith('local', { data: this.login })
+        this.$auth.setUser(response.data.data)
+        console.log(response)
+      } catch (err) {
+        console.log(err)
+      }
+    },
+  },
+}
 </script>
 
 <style scoped>
